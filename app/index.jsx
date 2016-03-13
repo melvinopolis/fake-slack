@@ -1,115 +1,85 @@
-// import style from './styles/';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Moment from 'moment';
+import { MessageItem } from './MessageItem';
+import { MessageInput } from './MessageInput';
 
-class MessageInput extends React.Component {
+class MessageList extends React.Component {
     constructor() {
         super();
+
         this.state = {
-            messageInput: '',
+            inputValue: '',
+            currentUser: 'mariel',
             messages: [
                 {
-                    text: "message 1",
-                    time: "8:15",
-                    user: "steve"
+                    text: 'hello world',
+                    time: '3:30',
+                    user: 'mariel'
                 },
                 {
-                    text: "hi everyone",
-                    time: "8:20",
-                    user: "joe"
+                    text: 'yooooo',
+                    time: '3:40',
+                    user: 'emily'
                 },
                 {
-                    text: "anyone there?",
-                    time: "8:25",
-                    user: "jane"
-                },
-                {
-                    text: "sup",
-                    time: "8:30",
-                    user: "lee"
-                },
+                    text: 'yay react',
+                    time: '3:50',
+                    user: 'mariel'
+                }
             ]
         }
     }
 
-    handleClick() {
-        if (this.state.messageInput != '') {
-            //copies messages array
+    handleClick(event) {
+        event.preventDefault();
+        if (this.state.inputValue != '') {
             var newMessage = this.state.messages.slice()
-            //pushes new message into copy
             newMessage.push({
-                    text: this.state.messageInput,
+                    text: this.state.inputValue,
                     time: "7:30",
-                    user: 'lee'
+                    user: this.state.currentUser
                 })
             this.setState({
-                //replaces message array with copied array
                 messages: newMessage,
-                messageInput: ''
+                inputValue: ''
             })
         }
     }
 
     handleChange(event) {
-        var input = event.target.value;
+        let newInput = event.target.value;
+        console.log(newInput)
         this.setState({
-            messageInput: input
-        });
+            inputValue: newInput
+        }); 
     }
 
-	render() {
-        var currentUser = "lee";
-        var redMessage = {
-            color: 'red'
-        }
-        var blackMessage = {
-            color: 'black'
-        }
-        var messageArray = Array.from(this.state.messages)
-        var messageItems = messageArray.map((message, i) => {
-            if (currentUser === message.user) {
-                return (<li key={i} style={redMessage}>
-                            <strong>{message.user}</strong> says:
-                            <p>{message.text}</p>
-                            <em>{message.time}</em>
-                        </li>);
+    render() {
+        let currentUser = this.state.currentUser;
+        let messageStyle;
+        let messageList = this.state.messages.map(function(message, i){
+            if (message.user === currentUser) {
+                messageStyle = {color: 'red'}
             } else {
-                return (<li key={i}>
-                            <strong>{message.user}</strong> says:
-                            <p>{message.text}</p>
-                            <em>{message.time}</em>
-                        </li>);
-            }  
-        })
-        messageItems = messageItems.reverse();
+                messageStyle = {color: 'grey'}
+            }
+            
+            return <MessageItem key={i} message={message} user={message.user} style={messageStyle} />
+        }).reverse();
 
-        if ( messageItems.length > 3 ) {
-            var showMessages = [];
-            for (var i = 0; i < 3; i++) {
-                showMessages.push(messageItems.shift());
-            }   
-        }
-
-		return (
+        return (
             <div>
-                <label htmlFor="message">Send a Message</label>
-
-                <input type="text" 
-                    id="message" 
-                    value={this.state.messageInput}
-                    onChange={this.handleChange.bind(this)}/>
-
-                <button onClick={this.handleClick.bind(this)}>Send</button>
-
+                <MessageInput   click={this.handleClick.bind(this)} 
+                                change={this.handleChange.bind(this)} 
+                                value={this.state.inputValue} />
                 <ul>
-                    {showMessages}
+                    {messageList}
                 </ul>
-
-                <button>load more messages</button>
             </div>
-		)
-	}
+        );
+    }
 }
 
 var loadPoint = document.querySelector('#app');
-ReactDOM.render(<MessageInput />, loadPoint);
+ReactDOM.render(<MessageList />, loadPoint);
