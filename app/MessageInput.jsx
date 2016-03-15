@@ -7,7 +7,7 @@ export class MessageInput extends React.Component {
 
     render() {
         return (
-            <form>
+            <form onSubmit={this.props.click}>
                 <label htmlFor="message">Send a Message</label>
 
                 <input type="text" 
@@ -15,7 +15,7 @@ export class MessageInput extends React.Component {
                     onChange={this.props.change}
                     value={this.props.value} />
 
-                <button onClick={this.props.click}>Send</button>
+                <button>Send</button>
             </form>
         );
     }
