@@ -1,0 +1,32 @@
+ul.message-list {
+	width: 80%;
+	margin: 0 auto 40px;
+	list-style: none;
+	padding-right: 40px;
+
+	li {
+		width: 100%;
+		padding: 20px;
+		margin-top: 5px;
+		&:not(:last-child) {
+			border-bottom: 1px solid lighten($darkColor, 50%);
+		}
+
+		strong {
+			display: inline-block;
+			color: $blue;
+			margin-right: 30px;
+			margin-bottom: 5px;
+		}
+		em {
+			color: $yellow;
+			float: right;
+		}
+
+		&.yours {
+			strong {
+				color: $magenta;
+			}
+		}
+	}
+}

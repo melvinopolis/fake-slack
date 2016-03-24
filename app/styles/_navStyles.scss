@@ -1,0 +1,36 @@
+nav {
+	height: 80px;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 20px;
+	background-color: #fff;
+	border-bottom: 2px solid $darkColor;
+
+	.logo {
+		img {
+			height: 50px;
+		}
+	}
+
+	.logged-in {
+		strong {
+			color: $magenta;
+			margin-right: 30px;
+		}
+	}
+
+	button {
+		padding: 10px 15px;
+		border: 2px solid $mainColor;
+		background-color: #fff;
+		color: $mainColor;
+		transition: .4s;
+		&:hover {
+			background-color: $mainColor;
+			color: #fff;
+			transition: .4s;
+		}
+	}
+}

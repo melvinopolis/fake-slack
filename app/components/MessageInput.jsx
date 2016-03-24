@@ -1,6 +1,6 @@
 import React from 'react';
 
-export class MessageInput extends React.Component {
+class MessageInput extends React.Component {
     constructor() {
         super();
     }
@@ -8,15 +8,16 @@ export class MessageInput extends React.Component {
     render() {
         return (
             <form onSubmit={this.props.click}>
-                <label htmlFor="message">Send a Message</label>
-
                 <input type="text" 
                     id="message" 
+                    placeholder="new message..."
+                    maxLength="100"
                     onChange={this.props.change}
                     value={this.props.value} />
-
-                <button>Send</button>
+                <p><em><small>press enter to send</small></em></p>
             </form>
         );
     }
 }
+
+export default MessageInput
