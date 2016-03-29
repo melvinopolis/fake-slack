@@ -5,6 +5,7 @@ import Firebase from 'firebase';
 import MessageItem from './MessageItem';
 import MessageInput from './MessageInput';
 import Nav from './Nav';
+import Favicon from 'react-favicon';
 
 class MessageList extends React.Component {
   constructor() {
@@ -139,6 +140,7 @@ class MessageList extends React.Component {
 
     return (
       <div>
+      	<Favicon url={[require('url?mimetype=image/png!../img/favicon.png')]} />
       	<Nav login={this.login.bind(this, 'github')} logout={this.logout.bind(this)} user={this.state.currentUser} />
       	<MessageInput click={this.handleSubmit.bind(this)} 
           	change={this.handleChange.bind(this)} 

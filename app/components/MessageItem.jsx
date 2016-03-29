@@ -11,20 +11,6 @@ class MessageItem extends React.Component {
         }
     }
 
-    
-
-    // renderEditForm() {
-    //     //move to render method
-    //     //if state = true
-    //     return (
-    //         <form onSubmit={this.props.update}>
-    //             <input type="text" value={this.props.message.text} />
-    //         </form>
-    //     )
-    // }
-
-
-
   render() {
     if (this.props.message.editing === true ) {
       return (
