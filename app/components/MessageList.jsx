@@ -13,7 +13,8 @@ class MessageList extends React.Component {
     this.state = {
       inputValue: '',
       currentUser: {},
-      messages: []
+      messages: [],
+      editing: false
     }
 
     this.ref = new Firebase('https://sweltering-torch-1419.firebaseio.com/messages/');
@@ -21,12 +22,10 @@ class MessageList extends React.Component {
   }
 
   componentWillMount() {
-		// check to see if token exists. if so, log in
-		// var token = localStorage.getItem('token');
-		// console.log(token);
-		// if (token) {
-		// 	this.mainRef.authWithCustomToken(token, this.authHandler.bind(this));
-		// }
+		let token = localStorage.getItem('authToken');
+		if (token) {
+			this.mainRef.authWithCustomToken(token, this.authHandler.bind(this));
+		}
 	}
 
   componentDidMount(){
@@ -40,7 +39,6 @@ class MessageList extends React.Component {
 
 	login(provider, event) {
 		event.preventDefault();
-		console.log('logging in with ' + provider);
 		this.mainRef.authWithOAuthPopup(provider, this.authHandler.bind(this));
 	}
 
@@ -50,19 +48,43 @@ class MessageList extends React.Component {
 			return;
 		} 
 
-		// save token so user stays logged in on refresh
-		// localStorage.setItem('token', authData.token);
+		let token = authData.token
+		localStorage.setItem('authToken', token);
 
-		// console.log(authData.github.username);
+		let username;
+		if (authData.github) {
+			localStorage.setItem('username', authData.github.username);
+			username = authData.github.username;
+		} else {
+			username = localStorage.getItem('username')
+		}
 
 		this.setState({
 			currentUser: {
 				uid: authData.uid,
-				username: authData.github.username
+				username: username
 			}
 		})
-		// console.log(this.state.currentUser.username);
 	}
+
+	logout() {
+		this.mainRef.unauth();
+		localStorage.removeItem('authToken');
+		localStorage.removeItem('username');
+		this.setState({
+			currentUser: {
+				uid: null,
+				username: null
+			}
+		})
+	}
+
+  handleChange(event) {
+    let newInput = event.target.value;
+    this.setState({
+      inputValue: newInput
+    }); 
+  }	
 
   handleSubmit(event) {
     event.preventDefault();
@@ -72,13 +94,13 @@ class MessageList extends React.Component {
     }
 
     if (this.state.inputValue != '') {
-      var newMessage = {
+      let newMessage = {
         text: this.state.inputValue,
         time: new Moment().format('ddd, h:mm a'),
-        user: this.state.currentUser.username
+        user: this.state.currentUser.username,
+        editing: false
       }
 
-      console.log(newMessage)
       this.ref.push(newMessage)
       this.setState({
         inputValue: ''
@@ -86,15 +108,18 @@ class MessageList extends React.Component {
     }
   }
 
-  handleChange(event) {
-    let newInput = event.target.value;
-    this.setState({
-      inputValue: newInput
-    }); 
+  handleEditClick() {
+    console.log('editing!');
+  }
+
+  updateMessage() {
+  	console.log('updating!');
   }
 
   render() {
     let currentUser = this.state.currentUser.username;
+    let editClick = this.handleEditClick.bind(this);
+    let updateMessage = this.updateMessage.bind(this);
     let messageClass;
     let messageList = this.state.messages.map(function(message, i){
       if (message.user === currentUser) {
@@ -103,12 +128,18 @@ class MessageList extends React.Component {
         messageClass = 'regular'
       }
             
-      return <MessageItem key={i} message={message} user={message.user} className={messageClass}/>
+      return <MessageItem key={i} 
+      					message={message} 
+      					user={message.user} 
+      					className={messageClass} 
+      					currentUser={currentUser}
+      					editClick={editClick}
+      					update={updateMessage}/>
     }).reverse();
 
     return (
       <div>
-      	<Nav login={this.login.bind(this, 'github')} user={this.state.currentUser} />
+      	<Nav login={this.login.bind(this, 'github')} logout={this.logout.bind(this)} user={this.state.currentUser} />
       	<MessageInput click={this.handleSubmit.bind(this)} 
           	change={this.handleChange.bind(this)} 
           	value={this.state.inputValue} />
